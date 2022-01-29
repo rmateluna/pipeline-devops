@@ -48,6 +48,4 @@ def call(){
     }
 }
 
-}
-
 return this;
