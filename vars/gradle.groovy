@@ -9,7 +9,8 @@
 
 def call(stages){
     def stagesList = stages.split(';')
-    sh "echo ${stages.split(';')}"
+    sh "echo ${stagesList}"
+    
     sBuild()
     sSonar()
     sCurlSpring()
