@@ -8,26 +8,32 @@
 */
 
 def call(){
-    stage("Paso 1: Compliar"){
+    env.STAGE = "Paso 1: Compliar"
+    stage("$env.STAGE "){
         sh "mvn clean compile -e"
     }
-    stage("Paso 2: Testear"){
+    env.STAGE = "Paso 2: Testear"
+    stage("$env.STAGE "){
         sh "mvn clean test -e"
     }
-    stage("Paso 3: Build .Jar"){
+    env.STAGE = "Paso 3: Build .Jar"
+    stage("$env.STAGE "){
         sh "mvn clean package -e"
     }
-    stage("Paso 4: Análisis SonarQube"){
+    env.STAGE = "Paso 4: Análisis SonarQube"
+    stage("$env.STAGE "){
         sh "echo 'Análisis Estático!'"
         withSonarQubeEnv('sonarqube') {
             sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=sonar-github -Dsonar.java.binaries=build'
         }
     }
-    stage("Paso 5: Curl Springboot Gradle sleep 60"){
+    env.STAGE = "Paso 5: Curl Springboot Gradle sleep 60"
+    stage("$env.STAGE "){
         sh "gradle bootRun&"
         sh "sleep 60 && curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
     }
-    stage("Paso 6: Subir Nexus"){
+    env.STAGE = "Paso 6: Subir Nexus"
+    stage("$env.STAGE "){
         nexusPublisher nexusInstanceId: 'nexus',
         nexusRepositoryId: 'devops-usach-nexus',
         packages: [
@@ -47,13 +53,16 @@ def call(){
             ]
         ]
     }
-    stage("Paso 7: Descargar Nexus"){
+    env.STAGE = "Paso 7: Descargar Nexu"
+    stage("$env.STAGE "){
         sh ' curl -X GET -u $NEXUS_USER:$NEXUS_PASSWORD "http://nexus:8081/repository/devops-usach-nexus/com/devopsusach2020/DevOpsUsach2020/0.0.1/DevOpsUsach2020-0.0.1.jar" -O'
     }
-    stage("Paso 8: Levantar Artefacto Jar"){
+    env.STAGE = "Paso 8: Levantar Artefacto Jar"
+    stage("$env.STAGE "){
         sh 'nohup bash java -jar DevOpsUsach2020-0.0.1.jar & >/dev/null'
     }
-    stage("Paso 9: Testear Artefacto - Dormir(Esperar 60sg) "){
+    env.STAGE = "Paso 9: Testear Artefacto - Dormir(Esperar 60sg"
+    stage("$env.STAGE "){
         sh "sleep 60 && curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
     }
 }
