@@ -8,7 +8,7 @@
 */
 
 def call(stages){
-    def stagesList = stages.split(";")
+    def stagesList = stages.split(';')
     sh "echo ${stages.split(';')}"
     sBuild()
     sSonar()
@@ -20,14 +20,14 @@ def call(stages){
 }
 
 def sBuild(){
-env.STAGE = "Paso Build"   
+    env.STAGE = "Paso Build"
     stage("$env.STAGE "){
         sh "gradle clean build"
     }
 }
 
 def sSonar(){
-  env.STAGE = "Paso 2: Sonar - Análisis Estático"
+    env.STAGE = "Paso 2: Sonar - Análisis Estático"
     stage("$env.STAGE "){
         sh "echo 'Análisis Estático!'"
         withSonarQubeEnv('sonarqube') {
