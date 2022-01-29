@@ -39,6 +39,14 @@ def call(){
                         }
                     }
                 }
+                post{
+                    success{
+                        slackSend color: 'good', message: "[Mentor Devops] [${JOB_NAME}] [${BUILD_TAG}] Ejecucion Exitosa", teamDomain: 'dipdevopsusac-tr94431', tokenCredentialId: 'slack-rmateluna'
+                    }
+                    failure{
+                        slackSend color: 'danger', message: "[Mentor Devops] [${env.JOB_NAME}] [${BUILD_TAG}] Ejecucion fallida en stage [${env.STAGE}]", teamDomain: 'dipdevopsusac-tr94431', tokenCredentialId: 'slack-rmateluna'
+                    }
+                }
             }
         }
     }
