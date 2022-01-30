@@ -35,7 +35,7 @@ def call(stages){
     //     }
     // }
 
-    echo 'stages: ${stages}'
+     sh "echo 'stages {stages}'"
 
     def arrayUtils = new array.arrayExtentions();
     def stagesArray = []
