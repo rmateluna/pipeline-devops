@@ -8,16 +8,54 @@
 */
 
 def call(stages){
-    def stagesList = stages.split(';')
-    sh "echo ${stagesList}"
-    
-    sBuild()
-    sSonar()
-    sCurlSpring()
-    sUNexus()
-    sDNexus()
-    sTestJar()
-    sCurlJar()
+    // def stagesList = stages.split(';')
+    // sh "echo ${stagesList}"
+    //Escribir directamente el código del stage, sin agregarle otra clausula de Jenkins.
+    // sBuild()
+    // sSonar()
+    // sCurlSpring()
+    // sUNexus()
+    // sDNexus()
+    // sTestJar()
+    // sCurlJar()
+
+    def listStagesOrder = [
+        'build': 'sBuild',
+        'sonar': 'sSonar',
+        'run_spring_curl': 'sCurlSpring',
+        'upload_nexus': 'sUNexus',
+        'download_nexus': 'sDNexus',
+        'run_jar': 'sTestJar',
+        'curl_jar': 'sCurlJar'
+    ]
+
+    // stagesList.each{
+    //     if(it == "build"){
+    //         sBuild()
+    //     }else{
+    //         if(it == "sonar"){
+    //             sSonar()
+    //         }else{
+    //             sh "echo 'Caso else'"
+    //         }
+
+    //     }
+    // }
+
+    def arrayUtils = new array.arrayExtentions();
+    def stagesArray = []
+        stagesArray = arrayUtils.searchKeyInArray(stages, ";", listStagesOrder)
+
+    if (stagesArray.isEmpty()) {
+        echo 'El pipeline se ejecutará completo'
+        allStages()
+    } else {
+        echo 'Stages a ejecutar :' + stages
+        stagesArray.each{ stageFunction ->//variable as param
+            echo 'Ejecutando ' + stageFunction
+            "${stageFunction}"()
+        }
+    }
 }
 
 def sBuild(){
@@ -51,7 +89,7 @@ def sUNexus(){
  env.STAGE = "Paso 4: Subir Nexus"
     stage("$env.STAGE "){
         nexusPublisher nexusInstanceId: 'nexus',
-                nexusRepositoryId: 'maven-nexus-repo',
+                nexusRepositoryId: 'devops-usach-nexus',
                 packages: [[
                     $class: 'MavenPackage',
                     mavenAssetList: [[
