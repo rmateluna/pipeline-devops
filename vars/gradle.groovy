@@ -58,8 +58,19 @@ def call(stages){
     }
 }
 
+def allStages(){
+    sBuild()
+    sSonar()
+    sCurlSpring()
+    sUNexus()
+    sDNexus()
+    sTestJar()
+    sCurlJar()
+}
+
 def sBuild(){
     env.STAGE = "Paso Build"
+    echo "${env.STAGE}"
     stage("$env.STAGE "){
         sh "gradle clean build"
     }
