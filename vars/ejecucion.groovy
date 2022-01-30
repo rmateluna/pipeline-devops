@@ -29,12 +29,12 @@ def call(){
                             case 'Maven':
                                 //def ejecucion = load 'maven.groovy'
                                 //ejecucion.call()
-                                maven.call()
+                                maven.call(params.stages)
                             break;
                             case 'Gradle':
                                 //def ejecucion = load 'gradle.groovy'
                                 //ejecucion.call()
-                                gradle.call()
+                                gradle.call(params.stages)
                             break;
                         }
                     }
